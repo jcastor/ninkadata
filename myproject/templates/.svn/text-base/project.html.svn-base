@@ -1,0 +1,21 @@
+{% extends "index.html" %}
+
+
+{% block content %}
+<a href="/">Home</a> > <a href="/{{project.distribution}}/">{{project.distribution}}</a> > <a href="/{{project.distribution}}/project/{{project.id}}/"> {{project.name}} </a>
+<p class="title">version listing - {{ project.name }}</p>
+	<table>
+		<tr>
+			<th>Version</th>
+			<th>Filecount</th>
+			<th>Distribution</th>
+		</tr>
+		{% for projects in projectWithName %}
+		<tr>
+			<td><a href="/project/{{projects.id}}/files/1/" class="projectname">{{ projects.version }}</a></td>
+			<td>{{projects.count}}</td>
+			<td>{{projects.distribution}}</td>
+		</tr>
+		{% endfor %}
+	</table>
+{% endblock %}

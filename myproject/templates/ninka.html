@@ -1,0 +1,21 @@
+{% extends "index.html" %}
+
+
+{% block content %}
+<p class="title">run ninka</p>
+STILL UNDER DEVELOPMENT<br/>
+Currently you can upload a single source file, ninka will be run on the file and the output will be given
+{% if results %}
+<br/>
+Results of ninka on your file:
+<br/>
+{% for filename,result in results.items %}
+{{filename}}: {{result}}<br/>
+{% endfor %}
+{% else %}
+<form action="." method="post" enctype="multipart/form-data">{% csrf_token %}
+{{ form.as_p }}
+<input type="submit" value="Submit"/>
+</form>
+{% endif %}
+{% endblock %}

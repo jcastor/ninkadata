@@ -1,0 +1,88 @@
+{% extends "index.html" %}
+{% load url from future %}
+
+{% block content %}
+<a href="{% url 'ninkadata.views.distview' %}">Home</a> > {% if dist.distribution %}<a href="{% url 'ninkadata.views.mainview' dist.distribution %}">{{dist.distribution}}</a>{% else %}<a href="{% url 'ninkadata.views.mainview' 'all'%}">all</a>{% endif %}
+<br/>
+{% if query %}
+<p class="title">Search Results</p>
+{% endif %}
+<p class="title">project listing - {{dist.distribution}}</p>
+
+<form action="." method="GET">
+	<input type="text" name="q" value="{{query|escape}}">
+	<input type="submit" value="Search">
+</form>
+<br/>
+{% if not query %}
+{% if dist.distribution %}
+<a href="{% url 'ninkadata.views.mainview' dist.distribution%}1/10">10</a> | <a href="{% url 'ninkadata.views.mainview' dist.distribution%}1/25">25</a> | <a href="{% url 'ninkadata.views.mainview' dist.distribution %}1/50">50</a> | <a href="{% url 'ninkadata.views.mainview' dist.distribution%}1/100">100</a> | <a href="{% url 'ninkadata.views.mainview' dist.distribution%}1/250">250</a> | <a href="{% url 'ninkadata.views.mainview' dist.distribution%}1/500">500</a> | <a href="{% url 'ninkadata.views.mainview' dist.distribution%}1/1000">1000</a> | <a href="{% url 'ninkadata.views.mainview' dist.distribution%}1/1000000"> all </a>
+{% else %}
+<a href="/all/1/10">10</a> | <a href="/all/1/25">25</a> | <a href="/all/1/50">50</a> | <a href="/all/1/100">100</a> | <a href="/all/1/250">250</a> | <a href="/all/1/500">500</a> | <a href="/all/1/1000">1000</a> | <a href="/all/1/1000000"> all </a>
+{% endif %}
+ Projects per page
+<br/>
+<br/>
+{% endif %}
+	{% if query %}
+		Results for "{{query|escape}}":<br/>
+		{% if results %}
+			<table border="1">
+				<tr>
+					<th>Project Name</th>
+				</tr>
+			{% for proj in results %}
+				<tr>
+					{% if dist.distribution %}
+					<td><a href="{% url 'ninkadata.views.project' dist=dist.distribution pid=proj.id %}" class="projectname">{{ proj.name }}</a> <br/></td>
+					{% else %}
+					<td><a href="{% url 'ninkadata.views.project' dist="all" pid=proj.id %}" class="projectname">{{proj.name}}</a><br/></td>
+					{% endif %}
+				</tr>
+			{% endfor %}
+			</table>
+		{% else %}
+			No Projects Found
+		{% endif %}
+	{% else %}
+		<table border="1">
+			<tr>
+				<th>Project Name</th>
+			</tr>
+		{% for project in projects %}
+			<tr>
+					{% if dist.distribution %}
+					<td><a href="{% url 'ninkadata.views.project' dist=dist.distribution pid=project.id %}" class="projectname">{{ project.name }}</a> <br/></td>
+					{% else %}
+					<td><a href="{% url 'ninkadata.views.project' dist="all" pid=project.id %}" class="projectname">{{project.name}}</a><br/></td>
+					{% endif %}
+			</tr>
+		{% endfor %}
+		</table>
+		<!-- Next/Prev page links -->
+		{% if projects.object_list and projects.paginator.num_pages > 1 %}
+		<br/>
+		<div class="pagination">
+			<span class="step-links">
+				{% if projects.has_previous %}
+					{% if dist.distribution %}
+						<a href="{% url 'ninkadata.views.mainview' dist=dist.distribution page=projects.previous_page_number rpp=rpp %}">Previous Page</a>
+					{% else %}
+						<a href="{% url 'ninkadata.views.mainview' dist="all" page=projects.previous_page_number rpp=rpp %}">Previous Page</a>
+					{% endif %}
+				{% endif %}
+				<span class="current">
+					Page {{projects.number }} of {{ projects.paginator.num_pages }}
+				</span>
+				{% if projects.has_next %}
+					{% if dist.distribution %}
+						<a href="{% url 'ninkadata.views.mainview' dist=dist.distribution page=projects.next_page_number rpp=rpp %}"> Next Page</a>
+					{% else %}
+						<a href="{% url 'ninkadata.views.mainview' dist="all" page=projects.next_page_number rpp=rpp %}"> Next Page</a>
+					{% endif %}
+				{% endif %}
+			</span>
+		</div>
+		{% endif %}
+	{% endif %}
+{% endblock %}

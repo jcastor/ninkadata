@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/!svn/ver/55/Projects/ninkadata/trunk/myproject/myproject
+END
+views.py
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/!svn/ver/22/Projects/ninkadata/trunk/myproject/myproject/views.py
+END
+__init__.py
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/!svn/ver/22/Projects/ninkadata/trunk/myproject/myproject/__init__.py
+END
+urls.py
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/!svn/ver/64/Projects/ninkadata/trunk/myproject/myproject/urls.py
+END
+wsgi.py
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/!svn/ver/22/Projects/ninkadata/trunk/myproject/myproject/wsgi.py
+END

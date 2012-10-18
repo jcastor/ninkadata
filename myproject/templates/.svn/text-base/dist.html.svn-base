@@ -1,0 +1,25 @@
+{% extends "index.html" %}
+
+{% block content %}
+<a href="/">Home</a>
+<p class="title">distribution listing</p>
+	<table>
+		<tr>
+			<th>Distribution</th>
+			<th>Project Count</th>
+			<th>File Count</th>
+		</tr>
+		{% for distribution, projcount, namecount in dists %}
+		<tr>
+			<td><a href="{% url ninkadata.views.mainview distribution %}" class="projectname">{{ distribution }}</a></td>
+			<td>{{projcount}}</td>
+			<td>{{namecount}}</td>
+		</tr>
+		{% endfor %}
+		<tr>
+			<td><a href="/all/" class="projectname">all</a></td>
+			<td>{{allcount}}</td>
+			<td>{{allsourcecount}}</td>
+		</tr>
+	</table>
+{% endblock %}
