@@ -1,8 +1,11 @@
 {% extends "index.html" %}
 
 {% block content %}
-<a href="/">Home</a>
+<a href="/">Home</a> > <a href="/distributions/">distributions</a>
 <p class="title">distribution listing</p>
+view: <a href="http://ag.cs.uvic.ca/distributions/">distributions</a> | <a href="http://ag.cs.uvic.ca/">all projects</a>
+<br/>
+<br/>
 	<table>
 		<tr>
 			<th>Distribution</th>

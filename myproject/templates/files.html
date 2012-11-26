@@ -91,12 +91,21 @@ Export file summary as txt file: <a href="/project/{{projects.id}}/export/">Down
 	<table>
 	<tr>
 		<th>Hash Summaries</th>
+		<th>Directories</th>
 	</tr>
 	<tr>
 		<td>
 			<form name="hashes" action="." method="get">
 			{% for hash,count in hashes %}
 				<input type="checkbox" name="hash" value="{{hash}}"/>{{hash}}: {{count}}<br/>
+			{% endfor %}
+			<input type="submit" value="Filter"/>
+			</form>
+		</td>
+		<td>
+			<form name="directories" action="." method="get">
+			{% for dir in directories %}
+				<input type="radio" name="direct" value="{{dir}}"/>{{dir}} <br/>
 			{% endfor %}
 			<input type="submit" value="Filter"/>
 			</form>

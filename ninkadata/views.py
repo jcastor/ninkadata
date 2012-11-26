@@ -9,13 +9,15 @@ from django.core.context_processors import csrf
 import subprocess
 import tarfile
 import csv
+import datetime
 import hashlib
+from django.views.decorators.cache import cache_page
 from django.http import HttpResponse
 # View: mainview
 # This view is the view that shows the project listing for the site, depending on the distribution in "dist"
 # Pagination is handled by the "page" variable, and the results per page are handled by "rpp".  Queries are 
 # handled with a GET request, and are used with a regex.
-def mainview(request,dist="debian4",page="1",rpp="25"):
+def mainview(request,dist="all",page="1",rpp="25"):
 	query = request.GET.get('q', '')
 	if query:
 		if dist == "all":
@@ -66,6 +68,7 @@ def distview(request):
 	return render_to_response("dist.html",p)
 # View: summary
 # Displays some generic summary information, most popular licenses, etc
+@cache_page(60 * 60 * 24)
 def summary(request):
 	projects = Project.objects.all().annotate(count=Count('sourcefile__name')).order_by('-count')
 	projects = projects[0:10]
@@ -131,11 +134,13 @@ def ninka(request):
 # This view shows the files within a project, based on the project id given in "pid". Pagination
 # is handled by the "page" variable, rather than through a GET request.  This also handles filtering
 # depending by the get variables filterd and hashed, the results are filtered.
+@cache_page(60 * 15)
 def files(request, pid, page):
 	from django.db import connection, transaction
 	cursor = connection.cursor()
 	filterd = request.GET.getlist('licenses')
 	hashed = request.GET.getlist('hash')
+	direct = request.GET.getlist('direct')
 	projects = Project.objects.get(id=int(pid))
 	cursor.execute('SELECT goodsent_hash, count(goodsent_hash) as count FROM ninkadata_sourcefile WHERE project_id = %s GROUP BY goodsent_hash ORDER BY count DESC', [projects.id])
 	hashes = cursor.fetchall()
@@ -145,6 +150,23 @@ def files(request, pid, page):
 	elif hashed:
 		files = SourceFile.objects.filter(goodsent_hash__in=hashed, project=projects)
 		filecount = SourceFile.objects.filter(goodsent_hash__in=hashed,project=projects).count()
+	elif direct:
+		files = SourceFile.objects.filter(project=projects)
+		filecount = SourceFile.objects.filter(project=projects).count()
+		directory = []
+		for f in files:
+			di = f.directory.split(projects.name+"-"+projects.version)
+			try:
+				d = di[1].split(f.name)
+				d.pop()
+			except IndexError:
+				d = di[0].split(f.name)
+				d.pop()
+			if d == direct:
+				directory.append(f.id)
+		files = SourceFile.objects.filter(id__in=directory,project=projects)
+		filecount = SourceFile.objects.filter(id__in=directory,project=projects).count()
+			
 	else:
 		files = SourceFile.objects.filter(project = projects)
 		filecount = SourceFile.objects.filter(project = projects).count()
@@ -155,7 +177,22 @@ def files(request, pid, page):
 			files = paginator.page(paginator.num_pages)
 		try: page = int(page)
 		except ValueError: page = 1
-
+	directories = []	
+	filesdir = SourceFile.objects.filter(project = projects)
+	for f in filesdir:
+		di = f.directory.split(projects.name+"-"+projects.version)
+		try:
+			d = di[1].split(f.name)
+			d.pop()
+		except IndexError:
+			di = f.directory.split(projects.name+"_"+projects.version)
+			d = di[1].split(f.name)
+			d.pop()
+		
+		for i in d:
+			if i not in directories:
+				directories.append(i)
+	directories.sort(key = lambda s: len(s)) #sort directories in order of length (root directories appear first)
 	ccount = SourceFile.objects.filter(extension = ".c", project=projects).count()
 	cppcount = SourceFile.objects.filter(extension = ".cpp", project=projects).count()
 	javacount = SourceFile.objects.filter(extension = ".java", project=projects).count()
@@ -165,32 +202,84 @@ def files(request, pid, page):
 	othercount = SourceFile.objects.filter(project=projects).count() - (ccount + cppcount + javacount + plcount + pycount + hcount)
 	liccount = License.objects.filter(sourcefile__in=SourceFile.objects.filter(project=projects)).annotate(count=Count('sourcefile'))
 	
-	fr = dict(hashes=hashes,filterd=filterd,files=files, projects=projects,filecount=filecount,ccount=ccount,javacount=javacount,cppcount=cppcount,plcount=plcount,pycount=pycount,hcount=hcount,othercount=othercount,liccount=liccount, user=request.user)
+	fr = dict(directories=directories,hashes=hashes,filterd=filterd,files=files, projects=projects,filecount=filecount,ccount=ccount,javacount=javacount,cppcount=cppcount,plcount=plcount,pycount=pycount,hcount=hcount,othercount=othercount,liccount=liccount, user=request.user)
 	return render_to_response("files.html",fr,context_instance=RequestContext(request))
 
 # View: exportfile
 # This view exports a text file with the data for a project
 def exportfile(request,pid):
+	i=0
 	projects = Project.objects.get(id=int(pid))
 	files = SourceFile.objects.filter(project=projects)
 	response = HttpResponse(mimetype='text/csv')
 	response['Content-Disposition'] = 'attachment; filename=' + projects.name + '.txt'
-
+	timestamp = datetime.datetime.now()
 	writer = csv.writer(response)
+	writer.writerow(['SPDXVersion: SPDX-1.0'])
+	writer.writerow(['License: Creative Commons Attribution License 3.0'])
+	writer.writerow(['Creator: Organization: University of Victoria'])
+	writer.writerow(['Creator: Tool: Ninkadata'])
+	writer.writerow(['Created: ' + str(timestamp)])
+	writer.writerow([' '])
 	writer.writerow(['## Package Information'])
 	writer.writerow(['PackageName: ' + projects.name])
 	writer.writerow(['PackageVersion: ' + projects.version])
 	writer.writerow(['PackageDistribution: ' + projects.distribution])
-	writer.writerow(['---'])
+	sha = sha1Checksum("/big/yuki/" + projects.distribution + "/src_archive/" + projects.name + "_" + projects.version + ".orig.tar.gz")
+	writer.writerow(['PackageChecksum: SHA1: ' + sha])
+	writer.writerow(['PackageLicenseConcluded: NOASSERTION '])
+	licdict = {}
+	for f in files:
+		if f.goodsent_hash not in licdict.values():
+			for l in f.licenses.all():
+				licdict[str(l)+"-"+str(i)] = f.goodsent_hash
+				i = i + 1
+	for dictentry in licdict.keys():
+		writer.writerow(['PackageLicenseInfoFromFiles: ' + dictentry])
+	writer.writerow([' '])
 	writer.writerow(['## File Information'])
 	for f in files:
 		writer.writerow(['FileName: ' + f.directory])
 		writer.writerow(['FileType: ' + f.extension])
+		shafile = sha1Checksum("/big/yuki/" + f.directory)
+		writer.writerow(['FileCheckSum: SHA1: ' + shafile])
+		writer.writerow(['LicenseConcluded: NOASSERTION'])
+		for lic,h in licdict.iteritems():
+			if h == f.goodsent_hash:
+				writer.writerow(['LicenseInfoInFile: ' + lic])
+#		for l in f.licenses.all():
+#			writer.writerow(['LicenseInfoInFile: ' + str(l)])
+		writer.writerow(['FileComments: <text>'])
 		writer.writerow(['.goodsent hash: MD5: ' + f.goodsent_hash])
+		writer.writerow(['</text>'])
+		writer.writerow([' '])
+	writer.writerow(['## License Information'])
+	checkdone = {}
+	for f in files:
+		goodsent = open('/big/yuki/' + f.directory + '.goodsent')
+		ninkalic = open('/big/yuki/' + f.directory + '.license')
+		ninkalictext = ninkalic.read()
+		goodsenttext = goodsent.read()
 		for l in f.licenses.all():
-			writer.writerow(['LicenseConcluded: ' + str(l)])
-		writer.writerow(['---'])
-		
+			if "NONE" in str(l):
+				pass
+			elif f.goodsent_hash not in licdict.values():
+				pass
+			elif f.goodsent_hash in checkdone.keys():
+				pass
+			else:
+				checkdone[f.goodsent_hash] = 1
+				for lic,goodshashed in licdict.iteritems():
+					if goodshashed == f.goodsent_hash:
+						writer.writerow(['LicenseID: ' + lic])
+				writer.writerow(['ExtractedText: <text>'])
+				writer.writerow([goodsenttext])
+				writer.writerow(['</text>'])
+				writer.writerow(['LicenseComments: <text>'])
+				writer.writerow(['Ninka identified the file as: '])
+				writer.writerow([ninkalictext])
+				writer.writerow(['</text>'])
+				writer.writerow([' '])
 	return response
 
 
@@ -205,6 +294,17 @@ def handle_file(f, filetype):
 def md5Checksum(filePath):
         fh = open(filePath, 'rb')
         m=hashlib.md5()
+        while True:
+                data = fh.read(8192)
+                if not data:
+                        break
+                m.update(data)
+        return m.hexdigest()
+# Function sha1Checksum
+# This function is used to calculate hashes
+def sha1Checksum(filePath):
+        fh = open(filePath, 'rb')
+        m=hashlib.sha1()
         while True:
                 data = fh.read(8192)
                 if not data:

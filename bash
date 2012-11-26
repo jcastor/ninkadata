@@ -139,10 +139,3 @@ python2.7 load_data.py xfg
 python2.7 load_data.py xfh
 python2.7 load_data.py xfi
 python2.7 load_data.py xfj
-python2.7 load_data.py xfk
-python2.7 load_data.py xfl
-python2.7 load_data.py xfm
-python2.7 load_data.py xfn
-python2.7 load_data.py xfo
-python2.7 load_data.py xfp
-python2.7 load_data.py xfq

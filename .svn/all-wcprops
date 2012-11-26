@@ -3,6 +3,12 @@ svn:wc:ra_dav:version-url
 V 47
 /!svn/ver/53/Projects/ninkadata/trunk/myproject
 END
+jcastor_ninka_latest.pgdump
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/!svn/ver/74/Projects/ninkadata/trunk/myproject/jcastor_ninka_latest.pgdump
+END
 manage.py
 K 25
 svn:wc:ra_dav:version-url

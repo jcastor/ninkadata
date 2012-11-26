@@ -3,6 +3,12 @@ svn:wc:ra_dav:version-url
 V 57
 /!svn/ver/50/Projects/ninkadata/trunk/myproject/ninkadata
 END
+views.py
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/!svn/ver/73/Projects/ninkadata/trunk/myproject/ninkadata/views.py
+END
 __init__.py
 K 25
 svn:wc:ra_dav:version-url
@@ -32,10 +38,4 @@ K 25
 svn:wc:ra_dav:version-url
 V 66
 /!svn/ver/22/Projects/ninkadata/trunk/myproject/ninkadata/admin.py
-END
-views.py
-K 25
-svn:wc:ra_dav:version-url
-V 66
-/!svn/ver/65/Projects/ninkadata/trunk/myproject/ninkadata/views.py
 END

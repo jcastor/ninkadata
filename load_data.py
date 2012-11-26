@@ -12,12 +12,12 @@ dataReader = csv.reader(f, delimiter=';', quotechar='"')
 for row in dataReader:
 	file = SourceFile()
 	try:
-		currentproject = Project.objects.get(name=row[0],version=row[1],distribution="debian5")
+		currentproject = Project.objects.get(name=row[0],version=row[1],distribution="debian6")
 	except Project.DoesNotExist:
 		currentproject = Project()
 		currentproject.name = row[0]
 		currentproject.version = row[1]
-		currentproject.distribution = "debian5"
+		currentproject.distribution = "debian6"
 		currentproject.save()
 	file.project = currentproject
 	lic = row[5].split(',')
