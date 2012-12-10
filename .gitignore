@@ -2,3 +2,6 @@ settings.py
 *.svn
 *.pyc
 jparse/
+myproject/
+apache2/
+.svn/
