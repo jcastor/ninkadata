@@ -1,9 +1,9 @@
 {% extends "index.html" %}
 
 {% block content %}
-<a href="/">Home</a> > <a href="/{{projects.distribution}}/">{{projects.distribution}}</a> > <a href="/{{projects.distribution}}/project/{{projects.id}}/"> {{projects.name}} </a> > <a href="/project/{{projects.id}}/files/1/"> {{projects.version}} </a>
+<a href="{% url ninkadata.views.mainview %}">Home</a> > <a href="{% url ninkadata.views.mainview projects.distribution %}">{{projects.distribution}}</a> > <a href="{% url ninkadata.views.project projects.distribution projects.id %}"> {{projects.name}} </a> > <a href="{% url ninkadata.views.files projects.id '1' %}"> {{projects.version}} </a>
 <p class="title">files for project - {{projects.name}} v{{projects.version}}</p>
-Export file summary as txt file: <a href="/project/{{projects.id}}/export/">Download</a><br/>
+Export file summary as txt file: <a href="{% url ninkadata.views.exportfile projects.id %}">Download</a><br/>
 	<table border="1">
 	<tr>
 		<th colspan="4">Summary</th>
@@ -54,16 +54,16 @@ Export file summary as txt file: <a href="/project/{{projects.id}}/export/">Down
 	</tr>
 	{% for file in files %}
 		<tr>
-			<td><a href="http://ag.cs.uvic.ca/static/{{file.directory}}" class="filename">{{ file.name }}</a></td>
+			<td><a href="{{STATIC_URL}}{{file.directory}}" class="filename">{{ file.name }}</a></td>
 			<td> {{file.directory}} </td>
 			<td>{% for license in file.licenses.all %}
 				{{ license }}
 				<br/>
 				{% endfor %}
 				 </td>
-			<td><a href="http://ag.cs.uvic.ca/static/{{file.directory}}.license">.license</a><br/>
-			<a href="http://ag.cs.uvic.ca/static/{{file.directory}}.goodsent">.goodsent</a><br/>
-			<a href="http://ag.cs.uvic.ca/static/{{file.directory}}.comments">.comments</a></td>
+			<td><a href="{{STATIC_URL}}{{file.directory}}.license">.license</a><br/>
+			<a href="{{STATIC_URL}}{{file.directory}}.goodsent">.goodsent</a><br/>
+			<a href="{{STATIC_URL}}{{file.directory}}.comments">.comments</a></td>
 			<td>
 			{{file.goodsent_hash}}
 			</td>
@@ -76,13 +76,13 @@ Export file summary as txt file: <a href="/project/{{projects.id}}/export/">Down
     <div class="pagination">
         <span class="step-links">
             {% if files.has_previous %}
-                <a href="/project/{{projects.id}}/files/{{ files.previous_page_number }}/?{% for filter1 in filterd %}licenses={{filter1}}&{% endfor %}">Previous Page</a>
+                <a href="{% url ninkadata.views.files projects.id files.previous_page_number %}?{% for filter1 in filterd %}licenses={{filter1}}&{% endfor %}">Previous Page</a>
             {% endif %}
             <span class="current">
                 Page {{files.number }} of {{ files.paginator.num_pages }}
             </span>
             {% if files.has_next %}
-                <a href="/project/{{projects.id}}/files/{{ files.next_page_number }}/?{% for filter1 in filterd %}licenses={{filter1}}&{% endfor %}"> Next Page</a>
+                <a href="{% url ninkadata.views.files projects.id files.next_page_number %}?{% for filter1 in filterd %}licenses={{filter1}}&{% endfor %}"> Next Page</a>
             {% endif %}
         </span>
     </div>

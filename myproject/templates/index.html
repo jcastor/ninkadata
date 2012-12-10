@@ -3,12 +3,12 @@
 <html>
 <head>
 <title>Ninka Data Collection</title>
-<link rel="stylesheet" type="text/css" href="http://ninka.jason-castor.com/static/css/style.css" />
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/style.css" />
 </head>
 <body>
 <div class="outside">
-	<div class="header"><a href="/" class="header">ninka data</a></div>
-	<div class="menu"><a href="/info/" class="menu">info</a> - <a href="/ninka/" class="menu">run ninka</a> - <a href="/summary/" class="menu">summary</a></div>
+	<div class="header"><a href="{% url ninkadata.views.mainview %}" class="header">ninka data</a></div>
+	<div class="menu"><a href="{% url ninkadata.views.info %}" class="menu">info</a> - <a href="{% url ninkadata.views.ninka %}" class="menu">run ninka</a> - <a href="{% url ninkadata.views.summary %}" class="menu">summary</a></div>
 	<div class="content">
 		<br/>
         {% block content %}{% endblock %}
