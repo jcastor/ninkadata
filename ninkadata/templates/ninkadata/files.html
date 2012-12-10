@@ -1,4 +1,4 @@
-{% extends "index.html" %}
+{% extends "ninkadata/index.html" %}
 
 {% block content %}
 <a href="{% url ninkadata.views.mainview %}">Home</a> > <a href="{% url ninkadata.views.mainview projects.distribution %}">{{projects.distribution}}</a> > <a href="{% url ninkadata.views.project projects.distribution projects.id %}"> {{projects.name}} </a> > <a href="{% url ninkadata.views.files projects.id '1' %}"> {{projects.version}} </a>

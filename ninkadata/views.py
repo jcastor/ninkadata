@@ -48,7 +48,7 @@ def mainview(request,dist="all",page="1",rpp="25"):
 	except (InvalidPage, EmptyPage):
 		projects = paginator.page(paginator.num_pages)
 	p = dict(rpp=rpp,projects=projects,query=query,results=results,dist=dist,user=request.user)
-	return render_to_response("projects.html", p, RequestContext(request))
+	return render_to_response("ninkadata/projects.html", p, RequestContext(request))
 # View: distview
 # This view shows a listing of the unique distributions so that this can be displayed on the first entry page
 def distview(request):
@@ -65,7 +65,7 @@ def distview(request):
 #	allcount = Project.objects.all().count()
 #	allsourcecount = SourceFile.objects.all().count()
 	p = dict(dists=dists,allcount=allcount,allsourcecount=allsourcecount)
-	return render_to_response("dist.html",p, RequestContext(request))
+	return render_to_response("ninkadata/dist.html",p, RequestContext(request))
 # View: summary
 # Displays some generic summary information, most popular licenses, etc
 @cache_page(60 * 60 * 24)
@@ -75,7 +75,7 @@ def summary(request):
 	poplicense = License.objects.all().annotate(count=Count('sourcefile__name')).order_by('-count')
 	poplicense = poplicense[0:10]
 	p = dict(poplicense=poplicense,projects=projects)
-	return render_to_response("summary.html",p, RequestContext(request))
+	return render_to_response("ninkadata/summary.html",p, RequestContext(request))
 # View: project
 # This view displays a list of projects that match the name given by the project with id = pid.  This allows us
 # to display all versions of a project within the same distribution
@@ -86,11 +86,11 @@ def project(request, pid, dist="debian4"):
 	else:
 		projectWithName = Project.objects.filter(name=project.name,distribution=dist).annotate(count=Count('sourcefile'))
 	pr = dict(projectWithName=projectWithName, project=project)
-	return render_to_response("project.html",pr, RequestContext(request))
+	return render_to_response("ninkadata/project.html",pr, RequestContext(request))
 # View: info
 # Just displays a generic info template
 def info(request):
-	return render_to_response("info.html", RequestContext(request))
+	return render_to_response("ninkadata/info.html", RequestContext(request))
 # View: ninka
 # This view allows users to use the ninka program on either individual files or on .tar.gz archives
 # If the file is an archive it is saved into tmp.tar.gz, then extracted and has a subprocess of ninka run on
@@ -128,7 +128,7 @@ def ninka(request):
 	else:
 		form = UploadFileForm()
 	p = dict(form=form)
-	return render_to_response("ninka.html", p, context_instance=RequestContext(request))
+	return render_to_response("ninkadata/ninka.html", p, context_instance=RequestContext(request))
 
 # View: files
 # This view shows the files within a project, based on the project id given in "pid". Pagination
@@ -203,7 +203,7 @@ def files(request, pid, page):
 	liccount = License.objects.filter(sourcefile__in=SourceFile.objects.filter(project=projects)).annotate(count=Count('sourcefile'))
 	
 	fr = dict(directories=directories,hashes=hashes,filterd=filterd,files=files, projects=projects,filecount=filecount,ccount=ccount,javacount=javacount,cppcount=cppcount,plcount=plcount,pycount=pycount,hcount=hcount,othercount=othercount,liccount=liccount, user=request.user)
-	return render_to_response("files.html",fr,context_instance=RequestContext(request))
+	return render_to_response("ninkadata/files.html",fr,context_instance=RequestContext(request))
 
 # View: exportfile
 # This view exports a text file with the data for a project
