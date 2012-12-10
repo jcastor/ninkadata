@@ -1,3 +1,4 @@
 settings.py
 *.svn
 *.pyc
+jparse/

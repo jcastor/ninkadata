@@ -1,9 +1,9 @@
 {% extends "index.html" %}
 
 {% block content %}
-<a href="/">Home</a> > <a href="/distributions/">distributions</a>
+<a href="/">Home</a> > <a href="{% url ninkadata.views.distview %}">distributions</a>
 <p class="title">distribution listing</p>
-view: <a href="http://ag.cs.uvic.ca/distributions/">distributions</a> | <a href="http://ag.cs.uvic.ca/">all projects</a>
+view: <a href="{% url ninkadata.views.distview %}">distributions</a> | <a href="{% url ninkadata.views.mainview %}">all projects</a>
 <br/>
 <br/>
 	<table>

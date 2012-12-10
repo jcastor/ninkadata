@@ -13,31 +13,31 @@ files.html
 K 25
 svn:wc:ra_dav:version-url
 V 78
-/!svn/ver/70/Projects/ninkadata/trunk/myproject/myproject/templates/files.html
+/!svn/ver/76/Projects/ninkadata/trunk/myproject/myproject/templates/files.html
 END
 dist.html
 K 25
 svn:wc:ra_dav:version-url
 V 77
-/!svn/ver/73/Projects/ninkadata/trunk/myproject/myproject/templates/dist.html
+/!svn/ver/76/Projects/ninkadata/trunk/myproject/myproject/templates/dist.html
 END
 project.html
 K 25
 svn:wc:ra_dav:version-url
 V 80
-/!svn/ver/64/Projects/ninkadata/trunk/myproject/myproject/templates/project.html
+/!svn/ver/76/Projects/ninkadata/trunk/myproject/myproject/templates/project.html
 END
 index.html
 K 25
 svn:wc:ra_dav:version-url
 V 78
-/!svn/ver/72/Projects/ninkadata/trunk/myproject/myproject/templates/index.html
+/!svn/ver/76/Projects/ninkadata/trunk/myproject/myproject/templates/index.html
 END
 projects.html
 K 25
 svn:wc:ra_dav:version-url
 V 81
-/!svn/ver/73/Projects/ninkadata/trunk/myproject/myproject/templates/projects.html
+/!svn/ver/76/Projects/ninkadata/trunk/myproject/myproject/templates/projects.html
 END
 info.html
 K 25

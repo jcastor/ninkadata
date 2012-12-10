@@ -12,14 +12,14 @@
 	<input type="text" name="q" value="{{query|escape}}">
 	<input type="submit" value="Search">
 </form>
-view: <a href="http://ag.cs.uvic.ca/distributions/">distributions</a> | <a href="http://ag.cs.uvic.ca/">all projects</a>
+view: <a href="{% url 'ninkadata.views.distview' %}">distributions</a> | <a href="{% url 'ninkadata.views.mainview' %}">all projects</a>
 <br/>
 <br/>
 {% if not query %}
 {% if dist.distribution %}
 <a href="{% url 'ninkadata.views.mainview' dist.distribution%}1/10">10</a> | <a href="{% url 'ninkadata.views.mainview' dist.distribution%}1/25">25</a> | <a href="{% url 'ninkadata.views.mainview' dist.distribution %}1/50">50</a> | <a href="{% url 'ninkadata.views.mainview' dist.distribution%}1/100">100</a> | <a href="{% url 'ninkadata.views.mainview' dist.distribution%}1/250">250</a> | <a href="{% url 'ninkadata.views.mainview' dist.distribution%}1/500">500</a> | <a href="{% url 'ninkadata.views.mainview' dist.distribution%}1/1000">1000</a> | <a href="{% url 'ninkadata.views.mainview' dist.distribution%}1/1000000">all</a>
 {% else %}
-<a href="/all/1/10">10</a> | <a href="/all/1/25">25</a> | <a href="/all/1/50">50</a> | <a href="/all/1/100">100</a> | <a href="/all/1/250">250</a> | <a href="/all/1/500">500</a> | <a href="/all/1/1000">1000</a> | <a href="/all/1/1000000">all</a>
+<a href="{% url 'ninkadata.views.mainview' 'all' %}1/10">10</a> | <a href="{% url 'ninkadata.views.mainview' 'all' %}1/25">25</a> | <a href="{% url 'ninkadata.views.mainview' 'all' %}1/50">50</a> | <a href="{% url 'ninkadata.views.mainview' 'all' %}1/100">100</a> | <a href="{% url 'ninkadata.views.mainview' 'all' %}1/250">250</a> | <a href="{% url 'ninkadata.views.mainview' 'all' %}1/500">500</a> | <a href="{% url 'ninkadata.views.mainview' 'all' %}1/1000">1000</a> | <a href="{% url 'ninkadata.views.mainview' 'all' %}1/1000000">all</a>
 {% endif %}
  Projects per page
 <br/>
