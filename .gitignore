@@ -1,7 +1,7 @@
 settings.py
 *.svn
 *.pyc
-jparse/
+jpparse/
 myproject/
 apache2/
 .svn/
